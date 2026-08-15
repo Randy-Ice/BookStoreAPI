@@ -45,6 +45,37 @@ namespace BookStoreAPI.Controllers
 
         }
 
+        [HttpPut("{id}")]
+        public IActionResult Update(Guid id, AuthorUpdateDTO artistDto)
+        {
+            var author = _dbContext.Authors.FirstOrDefault(x => x.Id == id);
+            if (author == null)
+            {
+                return NotFound();
+            }
+            artistDto.Adapt(author);
+
+            //Save changes
+            _dbContext.SaveChanges();
+            return NoContent();
+
+
+        }
+        [HttpDelete("{id}")]
+        public IActionResult Delete(Guid id)
+        {
+            var author = _dbContext.Authors.FirstOrDefault(x => x.Id == id);
+            if (author == null)
+            {
+                return NotFound();
+            }
+            _dbContext.Authors.Remove(author);
+            _dbContext.SaveChanges();
+            return NoContent();
+        }
+
+
+
 
     }
 
