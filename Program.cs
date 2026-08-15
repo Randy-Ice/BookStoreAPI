@@ -1,14 +1,28 @@
+using BookStoreAPI.Data;
+using DotNetEnv;
 using Microsoft.AspNetCore.OData;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+//load Env data
+Env.Load();
+var connectionString = Environment.GetEnvironmentVariable("DATABASE");
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+//DbContext
+
+builder.Services.AddDbContext<Database>(
+    options => options.UseSqlServer(
+        connectionString
+        )
+    );
 //OData setup
 builder.Services
     .AddControllers()
@@ -16,6 +30,8 @@ builder.Services
     options => options.Select().Filter().OrderBy().Count()
     //.Expand().SetMaxTop()
     );
+
+
 
 var app = builder.Build();
 
