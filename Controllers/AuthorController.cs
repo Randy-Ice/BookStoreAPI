@@ -1,8 +1,11 @@
 ﻿using BookStoreAPI.Data;
 using BookStoreAPI.DTOs;
 using BookStoreAPI.Models;
+
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreAPI.Controllers
 {
@@ -11,22 +14,22 @@ namespace BookStoreAPI.Controllers
     public class AuthorController : ControllerBase
 
     {
-        public readonly Database _dbContext;
+        readonly Database _dbContext;
         public AuthorController(Database database)
         {
             _dbContext = database;
         }
-
+        [EnableQuery()]
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var author = _dbContext.Authors.ToList();
+            var author = await _dbContext.Authors.ToListAsync();
             return Ok(author.Adapt<IEnumerable<AuthorGetDTO>>());
         }
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var artist = _dbContext.Authors.FirstOrDefault(x => x.Id == id);
+            var artist = await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == id);
             if (artist == null)
             {
                 return NotFound();
@@ -35,20 +38,20 @@ namespace BookStoreAPI.Controllers
 
         }
         [HttpPost]
-        public IActionResult Create(AuthorPostDTO createAuthor)
+        public async Task<IActionResult> Create(AuthorPostDTO createAuthor)
         {
             var createdAuthor = createAuthor.Adapt<Author>();
-            _dbContext.Authors.Add(createdAuthor);
-            _dbContext.SaveChanges();
+            await _dbContext.Authors.AddAsync(createdAuthor);
+            await _dbContext.SaveChangesAsync();
             var authorDto = createdAuthor.Adapt<AuthorGetDTO>();
             return CreatedAtAction(nameof(GetById), new { id = createdAuthor.Id }, authorDto);
 
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, AuthorUpdateDTO artistDto)
+        public async Task<IActionResult> Update(Guid id, AuthorUpdateDTO artistDto)
         {
-            var author = _dbContext.Authors.FirstOrDefault(x => x.Id == id);
+            var author = await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == id);
             if (author == null)
             {
                 return NotFound();
@@ -56,21 +59,21 @@ namespace BookStoreAPI.Controllers
             artistDto.Adapt(author);
 
             //Save changes
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return NoContent();
 
 
         }
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var author = _dbContext.Authors.FirstOrDefault(x => x.Id == id);
+            var author = await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == id);
             if (author == null)
             {
                 return NotFound();
             }
             _dbContext.Authors.Remove(author);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return NoContent();
         }
 

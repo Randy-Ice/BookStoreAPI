@@ -1,6 +1,6 @@
 ﻿namespace BookStoreAPI.DTOs
 {
-    public class AuthorDTO
+    public class AuthorGetDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -23,6 +23,10 @@ builder.Services.AddDbContext<Database>(
         connectionString
         )
     );
+
+//repositories here DI
+//builder.Services.AddScoped<IAuthor, AuthorRepository>();
+
 //OData setup
 builder.Services
     .AddControllers()
