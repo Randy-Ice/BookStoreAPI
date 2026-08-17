@@ -1,6 +1,6 @@
 ﻿namespace BookStoreAPI.DTOs
 {
-    public class AuthorUpdateDTO
+    public class PostAuthorDTO
     {
         public string Name { get; set; }
 

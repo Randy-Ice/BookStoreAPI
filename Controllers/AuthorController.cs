@@ -24,7 +24,7 @@ namespace BookStoreAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             var author = await _dbContext.Authors.ToListAsync();
-            return Ok(author.Adapt<IEnumerable<AuthorGetDTO>>());
+            return Ok(author.Adapt<IEnumerable<GetAuthorDTO>>());
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
@@ -34,22 +34,22 @@ namespace BookStoreAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(artist.Adapt<AuthorGetDTO>());
+            return Ok(artist.Adapt<GetAuthorDTO>());
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(AuthorPostDTO createAuthor)
+        public async Task<IActionResult> Create(PostAuthorDTO createAuthor)
         {
             var createdAuthor = createAuthor.Adapt<Author>();
             await _dbContext.Authors.AddAsync(createdAuthor);
             await _dbContext.SaveChangesAsync();
-            var authorDto = createdAuthor.Adapt<AuthorGetDTO>();
+            var authorDto = createdAuthor.Adapt<GetAuthorDTO>();
             return CreatedAtAction(nameof(GetById), new { id = createdAuthor.Id }, authorDto);
 
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, AuthorUpdateDTO artistDto)
+        public async Task<IActionResult> Update(Guid id, UpdateAuthorDTO artistDto)
         {
             var author = await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == id);
             if (author == null)
